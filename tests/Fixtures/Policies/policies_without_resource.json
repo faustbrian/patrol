@@ -1,0 +1,14 @@
+[
+    {
+        "subject": "user:123",
+        "action": "read",
+        "effect": "Allow",
+        "priority": 1
+    },
+    {
+        "subject": "user:456",
+        "action": "write",
+        "effect": "Deny",
+        "priority": 50
+    }
+]

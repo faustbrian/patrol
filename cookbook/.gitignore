@@ -1,0 +1,9 @@
+/vendor/
+/node_modules/
+/.idea/
+/.vscode/
+.DS_Store
+.env
+.phpunit.result.cache
+/cookbook/COMPLETE-COOKBOOK.md
+/cookbook/TABLE-OF-CONTENTS.md
