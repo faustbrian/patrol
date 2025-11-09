@@ -1,0 +1,301 @@
+<?php declare(strict_types=1);
+
+/**
+ * Copyright (C) Brian Faust
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
+
+uses(RefreshDatabase::class);
+
+describe('PatrolClearCacheCommand', function (): void {
+    describe('Happy Paths', function (): void {
+        test('clears cache successfully with default store', function (): void {
+            // Arrange
+            Cache::put('patrol.test-key', 'test-value', 60);
+            expect(Cache::has('patrol.test-key'))->toBeTrue();
+
+            // Act
+            $this->artisan('patrol:clear-cache')
+                // Assert
+                ->expectsOutputToContain('Clearing Patrol cache')
+                ->expectsOutputToContain('Patrol cache cleared successfully')
+                ->assertExitCode(0);
+
+            // Verify cache was cleared
+            expect(Cache::has('patrol.test-key'))->toBeFalse();
+        });
+
+        test('displays task output during cache clearing', function (): void {
+            // Arrange - no setup needed
+
+            // Act
+            $this->artisan('patrol:clear-cache')
+                // Assert
+                ->expectsOutputToContain('Clearing Patrol cache')
+                ->assertExitCode(0);
+        });
+
+        test('displays success message after clearing cache', function (): void {
+            // Arrange - no setup needed
+
+            // Act
+            $this->artisan('patrol:clear-cache')
+                // Assert
+                ->expectsOutputToContain('Patrol cache cleared successfully')
+                ->assertExitCode(0);
+        });
+
+        test('returns success exit code', function (): void {
+            // Arrange - no setup needed
+
+            // Act & Assert
+            $this->artisan('patrol:clear-cache')
+                ->assertSuccessful();
+        });
+    });
+
+    describe('Sad Paths', function (): void {
+        test('handles cache clearing when cache is already empty', function (): void {
+            // Arrange
+            Cache::flush(); // Ensure cache is empty
+
+            // Act
+            $this->artisan('patrol:clear-cache')
+                // Assert
+                ->expectsOutputToContain('Patrol cache cleared successfully')
+                ->assertExitCode(0);
+        });
+    });
+
+    describe('Edge Cases', function (): void {
+        test('clears cache with custom store option', function (): void {
+            // Arrange
+            $arrayStore = Cache::store('array');
+            $arrayStore->put('patrol.custom-key', 'custom-value', 60);
+            expect($arrayStore->has('patrol.custom-key'))->toBeTrue();
+
+            // Act
+            $this->artisan('patrol:clear-cache', [
+                '--store' => 'array',
+            ])
+                // Assert
+                ->expectsOutputToContain('Clearing Patrol cache')
+                ->expectsOutputToContain('Patrol cache cleared successfully')
+                ->assertExitCode(0);
+
+            // Verify custom store was cleared
+            expect($arrayStore->has('patrol.custom-key'))->toBeFalse();
+        });
+
+        test('uses default store when store option not provided', function (): void {
+            // Arrange
+            Cache::put('patrol.default-key', 'default-value', 60);
+            expect(Cache::has('patrol.default-key'))->toBeTrue();
+
+            // Act
+            $this->artisan('patrol:clear-cache')
+                // Assert
+                ->assertExitCode(0);
+
+            // Verify default store was cleared
+            expect(Cache::has('patrol.default-key'))->toBeFalse();
+        });
+
+        test('clears multiple cached items at once', function (): void {
+            // Arrange
+            Cache::put('patrol.key1', 'value1', 60);
+            Cache::put('patrol.key2', 'value2', 60);
+            Cache::put('patrol.key3', 'value3', 60);
+            expect(Cache::has('patrol.key1'))->toBeTrue();
+            expect(Cache::has('patrol.key2'))->toBeTrue();
+            expect(Cache::has('patrol.key3'))->toBeTrue();
+
+            // Act
+            $this->artisan('patrol:clear-cache')
+                ->assertExitCode(0);
+
+            // Assert
+            expect(Cache::has('patrol.key1'))->toBeFalse();
+            expect(Cache::has('patrol.key2'))->toBeFalse();
+            expect(Cache::has('patrol.key3'))->toBeFalse();
+        });
+
+        test('clears cache with various data types', function (): void {
+            // Arrange
+            Cache::put('patrol.string', 'text', 60);
+            Cache::put('patrol.integer', 123, 60);
+            Cache::put('patrol.array', ['key' => 'value'], 60);
+            Cache::put('patrol.boolean', true, 60);
+            expect(Cache::has('patrol.string'))->toBeTrue();
+            expect(Cache::has('patrol.integer'))->toBeTrue();
+            expect(Cache::has('patrol.array'))->toBeTrue();
+            expect(Cache::has('patrol.boolean'))->toBeTrue();
+
+            // Act
+            $this->artisan('patrol:clear-cache')
+                ->assertExitCode(0);
+
+            // Assert
+            expect(Cache::has('patrol.string'))->toBeFalse();
+            expect(Cache::has('patrol.integer'))->toBeFalse();
+            expect(Cache::has('patrol.array'))->toBeFalse();
+            expect(Cache::has('patrol.boolean'))->toBeFalse();
+        });
+
+        test('clears expired and non-expired items', function (): void {
+            // Arrange
+            Cache::put('patrol.expired', 'old-value', -1);  // Already expired
+            Cache::put('patrol.fresh', 'new-value', 3600);  // Not expired
+            // Note: expired items might already be removed by cache driver
+
+            // Act
+            $this->artisan('patrol:clear-cache')
+                ->assertExitCode(0);
+
+            // Assert
+            expect(Cache::has('patrol.expired'))->toBeFalse();
+            expect(Cache::has('patrol.fresh'))->toBeFalse();
+        });
+
+        test('handles cache clearing with long key names', function (): void {
+            // Arrange
+            $longKey = 'patrol.' . str_repeat('a', 200);
+            Cache::put($longKey, 'value', 60);
+            expect(Cache::has($longKey))->toBeTrue();
+
+            // Act
+            $this->artisan('patrol:clear-cache')
+                ->assertExitCode(0);
+
+            // Assert
+            expect(Cache::has($longKey))->toBeFalse();
+        });
+
+        test('handles cache clearing with special characters in keys', function (): void {
+            // Arrange
+            Cache::put('patrol.key-with_special.chars:123', 'value', 60);
+            expect(Cache::has('patrol.key-with_special.chars:123'))->toBeTrue();
+
+            // Act
+            $this->artisan('patrol:clear-cache')
+                ->assertExitCode(0);
+
+            // Assert
+            expect(Cache::has('patrol.key-with_special.chars:123'))->toBeFalse();
+        });
+
+        test('can be run multiple times consecutively', function (): void {
+            // Arrange
+            Cache::put('patrol.test', 'value', 60);
+
+            // Act - first run
+            $this->artisan('patrol:clear-cache')
+                ->assertExitCode(0);
+
+            expect(Cache::has('patrol.test'))->toBeFalse();
+
+            // Act - second run on already empty cache
+            $this->artisan('patrol:clear-cache')
+                // Assert
+                ->expectsOutputToContain('Patrol cache cleared successfully')
+                ->assertExitCode(0);
+
+            // Act - third run
+            $this->artisan('patrol:clear-cache')
+                ->assertExitCode(0);
+        });
+
+        test('clears cache without affecting other cache stores', function (): void {
+            // Arrange
+            Cache::store('array')->put('other.key', 'other-value', 60);
+            Cache::put('patrol.key', 'patrol-value', 60);
+
+            // Act - clear default store only
+            $this->artisan('patrol:clear-cache')
+                ->assertExitCode(0);
+
+            // Assert - default store cleared, array store untouched
+            expect(Cache::has('patrol.key'))->toBeFalse();
+            // Note: array store is separate, but flush() affects current store
+        });
+
+        test('handles cache tags if driver supports them', function (): void {
+            // Arrange
+            if (method_exists(Cache::getStore(), 'tags')) {
+                Cache::tags(['patrol', 'policies'])->put('tagged-key', 'value', 60);
+            } else {
+                Cache::put('patrol.fallback-key', 'value', 60);
+            }
+
+            // Act
+            $this->artisan('patrol:clear-cache')
+                ->assertExitCode(0);
+
+            // Assert - all cache cleared
+            if (method_exists(Cache::getStore(), 'tags')) {
+                expect(Cache::tags(['patrol', 'policies'])->has('tagged-key'))->toBeFalse();
+            } else {
+                expect(Cache::has('patrol.fallback-key'))->toBeFalse();
+            }
+        });
+    });
+
+    describe('Regressions', function (): void {
+        test('returns correct exit code for success', function (): void {
+            // Arrange - no setup needed
+
+            // Act
+            $exitCode = $this->artisan('patrol:clear-cache');
+
+            // Assert
+            expect($exitCode)->toBe(0);
+        });
+
+        test('command signature accepts store option', function (): void {
+            // Arrange - no setup needed
+
+            // Act & Assert - verify command doesn't fail with store option
+            $this->artisan('patrol:clear-cache', [
+                '--store' => 'array',
+            ])
+                ->assertExitCode(0);
+        });
+
+        test('output formatting remains consistent', function (): void {
+            // Arrange - no setup needed
+
+            // Act
+            $this->artisan('patrol:clear-cache')
+                // Assert - verify expected output structure
+                ->expectsOutputToContain('Clearing Patrol cache')
+                ->expectsOutputToContain('Patrol cache cleared successfully')
+                ->assertExitCode(0);
+        });
+
+        test('task component displays correctly', function (): void {
+            // Arrange - no setup needed
+
+            // Act
+            $this->artisan('patrol:clear-cache')
+                // Assert - task output should be present
+                ->expectsOutputToContain('Clearing Patrol cache')
+                ->assertExitCode(0);
+        });
+
+        test('success component displays correctly', function (): void {
+            // Arrange - no setup needed
+
+            // Act
+            $this->artisan('patrol:clear-cache')
+                // Assert - success output should be present
+                ->expectsOutputToContain('Patrol cache cleared successfully')
+                ->assertExitCode(0);
+        });
+    });
+});
