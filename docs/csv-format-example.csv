@@ -1,0 +1,6 @@
+subject,resource,action,effect,priority,domain
+user:alice,document:123,read,Allow,1,
+user:alice,document:123,write,Allow,1,
+user:bob,document:*,read,Allow,2,
+admin:*,*,*,Allow,10,
+user:alice,document:456,delete,Deny,5,engineering

@@ -1,0 +1,30 @@
+parameters:
+    level: max
+    paths:
+        - src
+
+    # Strict rules
+    checkMissingCallableSignature: true
+    checkMissingOverrideMethodAttribute: true
+    reportMaybesInMethodSignatures: true
+    reportStaticMethodSignatures: true
+    reportMaybesInPropertyPhpDocTypes: true
+
+    # Type coverage
+    checkExplicitMixedMissingReturn: true
+    checkFunctionNameCase: true
+    checkInternalClassCaseSensitivity: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    checkUninitializedProperties: true
+
+    # Additional strict checks
+    checkBenevolentUnionTypes: true
+    checkImplicitMixed: true
+
+    # Exclude test files from some strict checks
+    excludePaths:
+        - tests/
+        - vendor/
+
+    # Ignore warnings for traits used in tests and external code
+    ignoreErrors: []

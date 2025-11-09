@@ -1,0 +1,18 @@
+[
+    {
+        "subject": "user:123",
+        "resource": "document:456",
+        "action": "read",
+        "effect": "Allow",
+        "priority": 1,
+        "domain": "tenant:1"
+    },
+    {
+        "subject": "user:123",
+        "resource": "document:789",
+        "action": "write",
+        "effect": "Deny",
+        "priority": 50,
+        "domain": "tenant:2"
+    }
+]
