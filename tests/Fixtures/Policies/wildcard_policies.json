@@ -1,0 +1,23 @@
+[
+    {
+        "subject": "*",
+        "resource": "*",
+        "action": "read",
+        "effect": "Allow",
+        "priority": 1
+    },
+    {
+        "subject": "user:123",
+        "resource": "*",
+        "action": "write",
+        "effect": "Allow",
+        "priority": 10
+    },
+    {
+        "subject": "*",
+        "resource": "document:456",
+        "action": "delete",
+        "effect": "Deny",
+        "priority": 100
+    }
+]

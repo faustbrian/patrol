@@ -1,0 +1,180 @@
+<?php declare(strict_types=1);
+
+/**
+ * Copyright (C) Brian Faust
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Patrol\Core\Engine;
+
+use Override;
+use Patrol\Core\Contracts\RuleMatcherInterface;
+use Patrol\Core\ValueObjects\Action;
+use Patrol\Core\ValueObjects\PolicyRule;
+use Patrol\Core\ValueObjects\Resource;
+use Patrol\Core\ValueObjects\Subject;
+
+use function str_contains;
+use function str_replace;
+
+/**
+ * Matches policy rules using Attribute-Based Access Control (ABAC) semantics.
+ *
+ * Implements sophisticated rule matching that supports attribute conditions, enabling
+ * dynamic authorization decisions based on runtime entity properties and relationships.
+ * Unlike simple ACL matching, ABAC evaluates expressions like "resource.owner == subject.id"
+ * or "resource.protected == true" to determine rule applicability, allowing fine-grained
+ * access control without enumerating every subject-resource combination.
+ *
+ * @see RuleMatcherInterface For the rule matcher contract
+ * @see AclRuleMatcher For simpler identity-based matching
+ * @see AttributeResolver For attribute extraction and condition evaluation
+ *
+ * @psalm-immutable
+ *
+ * @author Brian Faust <brian@cline.sh>
+ */
+final readonly class AbacRuleMatcher implements RuleMatcherInterface
+{
+    /**
+     * Create a new ABAC rule matcher.
+     *
+     * @param AttributeResolver $attributeResolver Resolves entity attributes and evaluates
+     *                                             conditional expressions for ABAC policy rules,
+     *                                             enabling dynamic comparisons like "resource.owner
+     *                                             == subject.id" during rule matching evaluation.
+     */
+    public function __construct(
+        private AttributeResolver $attributeResolver,
+    ) {}
+
+    /**
+     * Determine if a policy rule matches using ABAC semantics.
+     *
+     * Evaluates subject, resource, and action constraints with support for attribute
+     * conditions and dynamic comparisons. All three components must match for the rule
+     * to be considered applicable to the authorization request.
+     *
+     * @param  PolicyRule $rule     The policy rule to evaluate for matching
+     * @param  Subject    $subject  The subject requesting access
+     * @param  resource   $resource The resource being accessed
+     * @param  Action     $action   The action being performed
+     * @return bool       True if all rule constraints match the authorization context
+     */
+    #[Override()]
+    public function matches(
+        PolicyRule $rule,
+        Subject $subject,
+        Resource $resource,
+        Action $action,
+    ): bool {
+        return $this->matchesSubject($rule, $subject, $resource)
+            && $this->matchesResource($rule, $resource)
+            && $this->matchesAction($rule, $action);
+    }
+
+    /**
+     * Evaluate if the rule's resource constraint matches the target resource.
+     *
+     * Implements multiple matching strategies: null resources for type-based permissions,
+     * wildcards for unrestricted access, attribute conditions handled elsewhere, exact ID
+     * matching, and type wildcards using "type:*" notation. The flexible matching supports
+     * both broad and specific resource targeting in policy rules.
+     *
+     * @param  PolicyRule $rule     The rule containing resource constraints to evaluate
+     * @param  resource   $resource The resource being accessed
+     * @return bool       True if the resource constraint matches
+     */
+    private function matchesResource(PolicyRule $rule, Resource $resource): bool
+    {
+        // Null resource allows action on resource type without specific instance
+        if ($rule->resource === null) {
+            return true;
+        }
+
+        // Wildcard grants access to all resources
+        if ($rule->resource === '*') {
+            return true;
+        }
+
+        // Attribute conditions are evaluated in matchesSubject for cross-entity comparisons
+        if (str_contains($rule->resource, '==') || str_contains($rule->resource, '!=')) {
+            return true;
+        }
+
+        // Exact resource ID matching for instance-specific permissions
+        if ($rule->resource === $resource->id) {
+            return true;
+        }
+
+        // Type wildcard matches all resources of a specific type (e.g., "document:*")
+        if (str_contains($rule->resource, ':*')) {
+            $ruleType = str_replace(':*', '', $rule->resource);
+
+            return $resource->type === $ruleType;
+        }
+
+        return false;
+    }
+
+    /**
+     * Evaluate if the rule's action constraint matches the requested action.
+     *
+     * Uses simple equality matching with wildcard support. The wildcard "*" grants
+     * permission for all actions, while specific action names require exact matching
+     * to ensure precise authorization control over different operation types.
+     *
+     * @param  PolicyRule $rule   The rule containing action constraints to evaluate
+     * @param  Action     $action The action being performed on the resource
+     * @return bool       True if the action constraint matches
+     */
+    private function matchesAction(PolicyRule $rule, Action $action): bool
+    {
+        // Wildcard allows all actions on the resource
+        if ($rule->action === '*') {
+            return true;
+        }
+
+        // Exact action name matching (case-sensitive)
+        return $rule->action === $action->name;
+    }
+
+    /**
+     * Evaluate if the rule's subject constraint matches the authorization subject.
+     *
+     * Supports three matching strategies: attribute conditions for dynamic comparisons
+     * (e.g., "subject.department == resource.department"), resource attribute conditions
+     * (e.g., "resource.protected == true"), and direct subject ID matching for simple cases.
+     * The method prioritizes attribute-based evaluation to enable relationship-based access control.
+     *
+     * @param  PolicyRule $rule     The rule containing subject constraints to evaluate
+     * @param  Subject    $subject  The subject requesting access
+     * @param  resource   $resource The resource context for attribute resolution
+     * @return bool       True if the subject constraint matches
+     */
+    private function matchesSubject(PolicyRule $rule, Subject $subject, Resource $resource): bool
+    {
+        // Evaluate attribute-based subject conditions like "subject.role == admin"
+        if (str_contains($rule->subject, '==') || str_contains($rule->subject, '!=')) {
+            return $this->attributeResolver->evaluateCondition(
+                $rule->subject,
+                $subject,
+                $resource,
+            );
+        }
+
+        // Evaluate resource attribute conditions placed in subject field for backwards compatibility
+        if ($rule->resource !== null && (str_contains($rule->resource, '==') || str_contains($rule->resource, '!='))) {
+            return $this->attributeResolver->evaluateCondition(
+                $rule->resource,
+                $subject,
+                $resource,
+            );
+        }
+
+        // Direct subject ID matching for simple identity-based rules
+        return $rule->subject === $subject->id;
+    }
+}
