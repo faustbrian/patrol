@@ -22,10 +22,9 @@ use function usort;
  * evaluated in priority order to enable fine-grained control over which rules take
  * precedence when multiple rules match an authorization request.
  *
+ * @author Brian Faust <brian@cline.sh>
  * @see Effect For the effect enumeration (Allow/Deny)
  * @see PolicyEvaluator For the policy evaluation workflow
- *
- * @author Brian Faust <brian@cline.sh>
  */
 final class EffectResolver
 {

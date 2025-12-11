@@ -46,10 +46,9 @@ use function sprintf;
  * }
  * ```
  *
+ * @author Brian Faust <brian@cline.sh>
  * @see RateLimiterInterface For rate limiting implementation
  * @see CacheRateLimiter For cache-based rate limiting
- *
- * @author Brian Faust <brian@cline.sh>
  */
 final class RateLimitExceededException extends RuntimeException
 {

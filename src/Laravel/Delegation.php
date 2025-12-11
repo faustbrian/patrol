@@ -16,8 +16,8 @@ use Patrol\Core\ValueObjects\Delegation as DelegationValue;
 use Patrol\Core\ValueObjects\DelegationScope;
 use Patrol\Core\ValueObjects\Subject;
 
-use function app;
 use function collect;
+use function resolve;
 
 /**
  * Facade for delegation operations in Laravel applications.
@@ -78,7 +78,7 @@ final class Delegation
         bool $transitive = false,
         array $metadata = [],
     ): DelegationValue {
-        $manager = app(DelegationManager::class);
+        $manager = resolve(DelegationManager::class);
 
         return $manager->delegate(
             delegator: new Subject($delegator->id),
@@ -100,7 +100,7 @@ final class Delegation
      */
     public static function revoke(string $delegationId): void
     {
-        $manager = app(DelegationManager::class);
+        $manager = resolve(DelegationManager::class);
         $manager->revoke($delegationId);
     }
 
@@ -118,7 +118,7 @@ final class Delegation
      */
     public static function active(object $user): Collection
     {
-        $manager = app(DelegationManager::class);
+        $manager = resolve(DelegationManager::class);
         $delegations = $manager->findActiveDelegations(
             new Subject($user->id),
         );
@@ -142,7 +142,7 @@ final class Delegation
      */
     public static function canDelegate(object $user, array $resources, array $actions): bool
     {
-        $manager = app(DelegationManager::class);
+        $manager = resolve(DelegationManager::class);
 
         return $manager->canDelegate(
             delegator: new Subject($user->id),

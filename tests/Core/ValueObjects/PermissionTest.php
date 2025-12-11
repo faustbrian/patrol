@@ -449,9 +449,11 @@ describe('Permission', function (): void {
                 expect($permission->name)->toBeString();
 
                 // Domain must be either null or instance of Domain
-                if ($permission->domain instanceof Domain) {
-                    expect($permission->domain)->toBeInstanceOf(Domain::class);
+                if (!$permission->domain instanceof Domain) {
+                    continue;
                 }
+
+                expect($permission->domain)->toBeInstanceOf(Domain::class);
             }
         });
     });

@@ -25,10 +25,9 @@ use InvalidArgumentException;
  * - Attempting to build a rule with null subject
  * - Incorrectly chaining builder methods
  *
+ * @author Brian Faust <brian@cline.sh>
  * @see PolicyRuleBuilder For the builder pattern requiring this validation
  * @see Subject For the subject value object identifying who requests access
- *
- * @author Brian Faust <brian@cline.sh>
  */
 final class SubjectNotSetException extends InvalidArgumentException
 {

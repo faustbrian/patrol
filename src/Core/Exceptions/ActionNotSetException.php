@@ -28,9 +28,8 @@ use function sprintf;
  * - Attempting to build a rule with null action
  * - Incorrectly chaining builder methods
  *
- * @see PolicyRuleBuilder For the builder pattern requiring this validation
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see PolicyRuleBuilder For the builder pattern requiring this validation
  */
 final class ActionNotSetException extends InvalidArgumentException
 {

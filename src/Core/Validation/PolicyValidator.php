@@ -33,10 +33,9 @@ use function usort;
  * - Effect conflicts: Allow/Deny overlap with incorrect priority ordering
  * - Cycle detection: Reserved for future policy inheritance/delegation features
  *
+ * @author Brian Faust <brian@cline.sh>
  * @see Policy For the policy structure being validated
  * @see EffectResolver For the deny-override resolution logic
- *
- * @author Brian Faust <brian@cline.sh>
  */
 final class PolicyValidator
 {
@@ -141,13 +140,15 @@ final class PolicyValidator
             foreach ($priorities as $priority => $effects) {
                 $uniqueEffects = array_unique($effects, SORT_REGULAR);
 
-                if (count($uniqueEffects) > 1) {
-                    $this->errors[] = sprintf(
-                        'Inconsistent priority: Rules for %s with priority %d have conflicting effects',
-                        $key,
-                        $priority,
-                    );
+                if (count($uniqueEffects) <= 1) {
+                    continue;
                 }
+
+                $this->errors[] = sprintf(
+                    'Inconsistent priority: Rules for %s with priority %d have conflicting effects',
+                    $key,
+                    $priority,
+                );
             }
         }
 
@@ -202,27 +203,33 @@ final class PolicyValidator
                     $hasAllow = true;
                 }
 
-                if ($rule->effect === Effect::Deny) {
-                    $hasDeny = true;
+                if ($rule->effect !== Effect::Deny) {
+                    continue;
                 }
+
+                $hasDeny = true;
             }
 
             // Allow/Deny overlap is valid with proper deny-override priority
-            if ($hasAllow && $hasDeny && count($groupRules) > 1) {
-                // Sort by priority to find highest priority rule
-                $sortedRules = $groupRules;
-                usort($sortedRules, fn ($a, $b): int => $b->priority->value <=> $a->priority->value);
-
-                $highestPriority = $sortedRules[0];
-
-                // Warn if highest priority is not Deny (violates deny-override)
-                if ($highestPriority->effect !== Effect::Deny) {
-                    $this->errors[] = sprintf(
-                        'Potential conflict: Rules for %s have both Allow and Deny, but highest priority is not Deny',
-                        $key,
-                    );
-                }
+            if (!$hasAllow || !$hasDeny || count($groupRules) <= 1) {
+                continue;
             }
+
+            // Sort by priority to find highest priority rule
+            $sortedRules = $groupRules;
+            usort($sortedRules, fn ($a, $b): int => $b->priority->value <=> $a->priority->value);
+
+            $highestPriority = $sortedRules[0];
+
+            // Warn if highest priority is not Deny (violates deny-override)
+            if ($highestPriority->effect === Effect::Deny) {
+                continue;
+            }
+
+            $this->errors[] = sprintf(
+                'Potential conflict: Rules for %s have both Allow and Deny, but highest priority is not Deny',
+                $key,
+            );
         }
 
         return $this;

@@ -25,10 +25,9 @@ use Patrol\Core\ValueObjects\Delegation;
  * - Support efficient cleanup of expired/revoked delegations
  * - Consider caching strategies for frequently accessed delegations
  *
+ * @author Brian Faust <brian@cline.sh>
  * @see Delegation For the delegation value object structure
  * @see DelegationManager For business logic using this repository
- *
- * @author Brian Faust <brian@cline.sh>
  */
 interface DelegationRepositoryInterface
 {

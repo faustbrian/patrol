@@ -21,10 +21,9 @@ use Patrol\Core\ValueObjects\Subject;
  * a specific subject attempting to interact with a resource. The repository pattern
  * allows flexible policy storage strategies while maintaining a consistent interface.
  *
+ * @author Brian Faust <brian@cline.sh>
  * @see Policy For the policy structure and rule definitions
  * @see PolicyEvaluator For how retrieved policies are evaluated
- *
- * @author Brian Faust <brian@cline.sh>
  */
 interface PolicyRepositoryInterface
 {

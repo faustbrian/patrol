@@ -28,13 +28,12 @@ use function str_replace;
  * or "resource.protected == true" to determine rule applicability, allowing fine-grained
  * access control without enumerating every subject-resource combination.
  *
- * @see RuleMatcherInterface For the rule matcher contract
- * @see AclRuleMatcher For simpler identity-based matching
- * @see AttributeResolver For attribute extraction and condition evaluation
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see RuleMatcherInterface For the rule matcher contract
+ * @see AclRuleMatcher For simpler identity-based matching
+ * @see AttributeResolver For attribute extraction and condition evaluation
  */
 final readonly class AbacRuleMatcher implements RuleMatcherInterface
 {

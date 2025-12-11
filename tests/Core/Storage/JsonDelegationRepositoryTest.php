@@ -1680,9 +1680,11 @@ describe('JsonDelegationRepository', function (): void {
             expect($found2)->toBeNull();
 
             // Cleanup
-            if (is_link($filePath)) {
-                unlink($filePath);
+            if (!is_link($filePath)) {
+                return;
             }
+
+            unlink($filePath);
         });
     });
 

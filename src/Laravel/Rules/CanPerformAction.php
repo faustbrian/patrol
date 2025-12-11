@@ -21,7 +21,6 @@ use Patrol\Core\ValueObjects\Resource;
 use Patrol\Core\ValueObjects\Subject;
 use Patrol\Laravel\Patrol;
 
-use function app;
 use function array_key_exists;
 use function class_basename;
 use function is_array;
@@ -30,6 +29,7 @@ use function is_object;
 use function is_string;
 use function method_exists;
 use function property_exists;
+use function resolve;
 use function sprintf;
 
 /**
@@ -108,16 +108,18 @@ final readonly class CanPerformAction implements ValidationRule
         $resourceValue = $this->toPatrolResource($this->resource);
 
         // Load and evaluate policies
-        $repository = app(PolicyRepositoryInterface::class);
-        $evaluator = app(PolicyEvaluator::class);
+        $repository = resolve(PolicyRepositoryInterface::class);
+        $evaluator = resolve(PolicyEvaluator::class);
 
         $policy = $repository->getPoliciesFor($subject, $resourceValue);
         $result = $evaluator->evaluate($policy, $subject, $resourceValue, $action);
 
-        if ($result !== Effect::Allow) {
-            $resourceLabel = $this->getResourceLabel($resourceValue);
-            $fail(sprintf('You are not authorized to %s %s.', $actionName, $resourceLabel));
+        if ($result === Effect::Allow) {
+            return;
         }
+
+        $resourceLabel = $this->getResourceLabel($resourceValue);
+        $fail(sprintf('You are not authorized to %s %s.', $actionName, $resourceLabel));
     }
 
     /**

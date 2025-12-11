@@ -37,9 +37,8 @@ use function sprintf;
  * - Ensure the version was properly saved before attempting to load
  * - Check storage path configuration points to correct location
  *
- * @see VersionedPolicyStorage For version management implementation
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see VersionedPolicyStorage For version management implementation
  */
 final class StorageVersionNotFoundException extends InvalidArgumentException
 {

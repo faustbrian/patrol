@@ -49,9 +49,8 @@ use function sprintf;
  * }
  * ```
  *
- * @see PolicyDiff For the resulting diff structure with categorized changes
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see PolicyDiff For the resulting diff structure with categorized changes
  */
 final class PolicyComparator
 {
@@ -102,9 +101,11 @@ final class PolicyComparator
 
         // Find removed rules
         foreach ($oldRules as $signature => $rule) {
-            if (!array_key_exists($signature, $newRules)) {
-                $removedRules[] = $rule;
+            if (array_key_exists($signature, $newRules)) {
+                continue;
             }
+
+            $removedRules[] = $rule;
         }
 
         return new PolicyDiff(

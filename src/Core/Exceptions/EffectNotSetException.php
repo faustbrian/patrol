@@ -28,10 +28,9 @@ use function sprintf;
  * - Attempting to build a rule with null effect
  * - Incorrectly chaining builder methods
  *
+ * @author Brian Faust <brian@cline.sh>
  * @see PolicyRuleBuilder For the builder pattern requiring this validation
  * @see Effect For the Allow/Deny effect enumeration
- *
- * @author Brian Faust <brian@cline.sh>
  */
 final class EffectNotSetException extends InvalidArgumentException
 {

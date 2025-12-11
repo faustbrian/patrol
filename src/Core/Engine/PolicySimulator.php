@@ -47,10 +47,9 @@ use function microtime;
  * echo "Time: {$result->executionTime}ms\n";
  * ```
  *
+ * @author Brian Faust <brian@cline.sh>
  * @see SimulationResult For the detailed result structure with timing and metadata
  * @see PolicyEvaluator For the underlying evaluation engine
- *
- * @author Brian Faust <brian@cline.sh>
  *
  * @psalm-immutable
  */

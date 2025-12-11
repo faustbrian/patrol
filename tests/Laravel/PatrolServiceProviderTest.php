@@ -192,8 +192,8 @@ describe('PatrolServiceProvider', function (): void {
         describe('Happy Paths', function (): void {
             test('registers ACL rule matcher as singleton', function (): void {
                 // Act
-                $matcher1 = app('patrol.matcher.acl');
-                $matcher2 = app('patrol.matcher.acl');
+                $matcher1 = resolve('patrol.matcher.acl');
+                $matcher2 = resolve('patrol.matcher.acl');
 
                 // Assert
                 expect($matcher1)->toBeInstanceOf(AclRuleMatcher::class);
@@ -202,8 +202,8 @@ describe('PatrolServiceProvider', function (): void {
 
             test('registers RBAC rule matcher as singleton', function (): void {
                 // Act
-                $matcher1 = app('patrol.matcher.rbac');
-                $matcher2 = app('patrol.matcher.rbac');
+                $matcher1 = resolve('patrol.matcher.rbac');
+                $matcher2 = resolve('patrol.matcher.rbac');
 
                 // Assert
                 expect($matcher1)->toBeInstanceOf(RbacRuleMatcher::class);
@@ -212,8 +212,8 @@ describe('PatrolServiceProvider', function (): void {
 
             test('registers ABAC rule matcher as singleton', function (): void {
                 // Act
-                $matcher1 = app('patrol.matcher.abac');
-                $matcher2 = app('patrol.matcher.abac');
+                $matcher1 = resolve('patrol.matcher.abac');
+                $matcher2 = resolve('patrol.matcher.abac');
 
                 // Assert
                 expect($matcher1)->toBeInstanceOf(AbacRuleMatcher::class);
@@ -222,7 +222,7 @@ describe('PatrolServiceProvider', function (): void {
 
             test('registers RESTful rule matcher as singleton with ACL fallback', function (): void {
                 // Act
-                $matcher = app('patrol.matcher.restful');
+                $matcher = resolve('patrol.matcher.restful');
 
                 // Assert
                 expect($matcher)->toBeInstanceOf(RestfulRuleMatcher::class);
@@ -233,7 +233,7 @@ describe('PatrolServiceProvider', function (): void {
                 Config::set('patrol.default_matcher', 'acl');
 
                 // Act
-                $matcher = app(RuleMatcherInterface::class);
+                $matcher = resolve(RuleMatcherInterface::class);
 
                 // Assert
                 expect($matcher)->toBeInstanceOf(AclRuleMatcher::class);
@@ -245,7 +245,7 @@ describe('PatrolServiceProvider', function (): void {
                 app()->forgetInstance(RuleMatcherInterface::class);
 
                 // Act
-                $matcher = app(RuleMatcherInterface::class);
+                $matcher = resolve(RuleMatcherInterface::class);
 
                 // Assert
                 expect($matcher)->toBeInstanceOf(RbacRuleMatcher::class);
@@ -257,7 +257,7 @@ describe('PatrolServiceProvider', function (): void {
                 app()->forgetInstance(RuleMatcherInterface::class);
 
                 // Act
-                $matcher = app(RuleMatcherInterface::class);
+                $matcher = resolve(RuleMatcherInterface::class);
 
                 // Assert
                 expect($matcher)->toBeInstanceOf(AbacRuleMatcher::class);
@@ -269,7 +269,7 @@ describe('PatrolServiceProvider', function (): void {
                 app()->forgetInstance(RuleMatcherInterface::class);
 
                 // Act
-                $matcher = app(RuleMatcherInterface::class);
+                $matcher = resolve(RuleMatcherInterface::class);
 
                 // Assert
                 expect($matcher)->toBeInstanceOf(RestfulRuleMatcher::class);
@@ -277,8 +277,8 @@ describe('PatrolServiceProvider', function (): void {
 
             test('registers effect resolver as singleton', function (): void {
                 // Act
-                $resolver1 = app(EffectResolver::class);
-                $resolver2 = app(EffectResolver::class);
+                $resolver1 = resolve(EffectResolver::class);
+                $resolver2 = resolve(EffectResolver::class);
 
                 // Assert
                 expect($resolver1)->toBeInstanceOf(EffectResolver::class);
@@ -287,8 +287,8 @@ describe('PatrolServiceProvider', function (): void {
 
             test('registers policy evaluator as singleton', function (): void {
                 // Act
-                $evaluator1 = app(PolicyEvaluator::class);
-                $evaluator2 = app(PolicyEvaluator::class);
+                $evaluator1 = resolve(PolicyEvaluator::class);
+                $evaluator2 = resolve(PolicyEvaluator::class);
 
                 // Assert
                 expect($evaluator1)->toBeInstanceOf(PolicyEvaluator::class);
@@ -300,7 +300,7 @@ describe('PatrolServiceProvider', function (): void {
                 Config::set('patrol.subject_resolver', LaravelSubjectResolver::class);
 
                 // Act
-                $resolver = app(SubjectResolverInterface::class);
+                $resolver = resolve(SubjectResolverInterface::class);
 
                 // Assert
                 expect($resolver)->toBeInstanceOf(LaravelSubjectResolver::class);
@@ -311,7 +311,7 @@ describe('PatrolServiceProvider', function (): void {
                 Config::set('patrol.delegation.enabled', false);
 
                 // Act & Assert
-                expect(fn () => app(DelegationRepositoryInterface::class))
+                expect(fn () => resolve(DelegationRepositoryInterface::class))
                     ->toThrow(BindingResolutionException::class);
             })->group('happy-path');
 
@@ -328,10 +328,10 @@ describe('PatrolServiceProvider', function (): void {
                 new PatrolServiceProvider(app())->register();
 
                 // Act
-                $repository = app(DelegationRepositoryInterface::class);
-                $validator = app(DelegationValidator::class);
-                $manager = app(DelegationManager::class);
-                $evaluator = app(PolicyEvaluator::class);
+                $repository = resolve(DelegationRepositoryInterface::class);
+                $validator = resolve(DelegationValidator::class);
+                $manager = resolve(DelegationManager::class);
+                $evaluator = resolve(PolicyEvaluator::class);
 
                 // Assert
                 expect($repository)->toBeInstanceOf(DatabaseDelegationRepository::class);
@@ -353,7 +353,7 @@ describe('PatrolServiceProvider', function (): void {
                 new PatrolServiceProvider(app())->register();
 
                 // Act
-                $repository = app(DelegationRepositoryInterface::class);
+                $repository = resolve(DelegationRepositoryInterface::class);
 
                 // Assert
                 expect($repository)->toBeInstanceOf(CachedDelegationRepository::class);
@@ -371,7 +371,7 @@ describe('PatrolServiceProvider', function (): void {
                 new PatrolServiceProvider(app())->register();
 
                 // Act
-                $validator = app(DelegationValidator::class);
+                $validator = resolve(DelegationValidator::class);
 
                 // Assert
                 expect($validator)->toBeInstanceOf(DelegationValidator::class);
@@ -391,7 +391,7 @@ describe('PatrolServiceProvider', function (): void {
                 new PatrolServiceProvider(app())->register();
 
                 // Act
-                $validator = app(DelegationValidator::class);
+                $validator = resolve(DelegationValidator::class);
 
                 // Assert
                 expect($validator)->toBeInstanceOf(DelegationValidator::class);

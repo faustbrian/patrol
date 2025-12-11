@@ -46,9 +46,8 @@ use Patrol\Core\ValueObjects\Delegation as DelegationValue;
  * @method static DelegationValue                  grant(object $delegator, object $delegate, array<int, string> $resources, array<int, string> $actions, ?DateTimeImmutable $expiresAt = null, bool $transitive = false, array<string, mixed> $metadata = [])
  * @method static void                             revoke(string $delegationId)
  *
- * @see \Patrol\Laravel\Delegation
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see \Patrol\Laravel\Delegation
  */
 final class Delegation extends Facade
 {

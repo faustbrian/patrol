@@ -30,9 +30,8 @@ use function sprintf;
  * - Using unsupported key type from previous versions
  * - Incorrect environment variable value
  *
- * @see PrimaryKeyType For the enum defining valid primary key types
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see PrimaryKeyType For the enum defining valid primary key types
  */
 final class InvalidPrimaryKeyTypeException extends InvalidArgumentException
 {

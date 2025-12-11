@@ -46,9 +46,11 @@ describe('SerializedPolicyRepository', function (): void {
     });
 
     afterEach(function (): void {
-        if (is_dir($this->tempDir)) {
-            FilesystemHelper::deleteDirectory($this->tempDir);
+        if (!is_dir($this->tempDir)) {
+            return;
         }
+
+        FilesystemHelper::deleteDirectory($this->tempDir);
     });
 
     describe('decode() method - Valid Data', function (): void {

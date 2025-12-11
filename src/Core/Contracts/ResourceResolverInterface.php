@@ -19,9 +19,8 @@ use Patrol\Core\ValueObjects\Resource;
  * engine can process. This abstraction allows the authorization system to work with
  * diverse resource representations while maintaining type safety and consistency.
  *
- * @see Resource For the resource value object structure
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see Resource For the resource value object structure
  */
 interface ResourceResolverInterface
 {

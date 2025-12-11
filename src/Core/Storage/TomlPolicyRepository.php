@@ -24,11 +24,10 @@ use function is_array;
  * clean, human-readable syntax for configuration with strong typing support.
  * Policies are stored under [[policies]] table array syntax.
  *
- * @see AbstractFilePolicyRepository For common policy operations
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see AbstractFilePolicyRepository For common policy operations
  */
 final readonly class TomlPolicyRepository extends AbstractFilePolicyRepository
 {

@@ -22,10 +22,9 @@ use Patrol\Core\ValueObjects\Subject;
  * combination. The strategy pattern allows the authorization system to support multiple
  * access control paradigms with model-specific matching semantics.
  *
+ * @author Brian Faust <brian@cline.sh>
  * @see AbacRuleMatcher For attribute-based access control matching
  * @see AclRuleMatcher For access control list matching
- *
- * @author Brian Faust <brian@cline.sh>
  */
 interface RuleMatcherInterface
 {

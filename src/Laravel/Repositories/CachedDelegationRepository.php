@@ -129,9 +129,11 @@ final readonly class CachedDelegationRepository implements DelegationRepositoryI
         // Invalidate caches
         $this->cache->forget($this->idCacheKey($id));
 
-        if ($delegation instanceof Delegation) {
-            $this->cache->forget($this->activeCacheKey($delegation->delegateId));
+        if (!$delegation instanceof Delegation) {
+            return;
         }
+
+        $this->cache->forget($this->activeCacheKey($delegation->delegateId));
     }
 
     /**

@@ -22,9 +22,8 @@ use Patrol\Core\ValueObjects\Subject;
  * and forensic analysis. The interface enables pluggable audit logging strategies
  * while maintaining a consistent contract for the authorization system.
  *
- * @see NullAuditLogger For a no-operation implementation when logging is disabled
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see NullAuditLogger For a no-operation implementation when logging is disabled
  */
 interface AuditLoggerInterface
 {

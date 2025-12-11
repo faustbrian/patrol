@@ -35,12 +35,11 @@ use function str_starts_with;
  * (e.g., "resource.owner", "subject.department"), equality and inequality operators for
  * comparisons, and pluggable attribute providers for custom resolution strategies.
  *
- * @see AttributeProviderInterface For custom attribute extraction implementations
- * @see AbacRuleMatcher For ABAC rule matching using attribute conditions
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see AttributeProviderInterface For custom attribute extraction implementations
+ * @see AbacRuleMatcher For ABAC rule matching using attribute conditions
  */
 final readonly class AttributeResolver
 {

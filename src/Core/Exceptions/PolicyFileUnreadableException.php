@@ -34,9 +34,8 @@ use function sprintf;
  * - Ensure the disk and file system are functioning properly
  * - If on network storage, verify connectivity and mount status
  *
- * @see FilePolicyRepository For the repository requiring readable policy files
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see FilePolicyRepository For the repository requiring readable policy files
  */
 final class PolicyFileUnreadableException extends InvalidArgumentException
 {

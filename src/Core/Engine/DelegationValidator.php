@@ -186,9 +186,11 @@ final readonly class DelegationValidator
             $delegations = $this->delegationRepository->findActiveForDelegate($current);
 
             foreach ($delegations as $delegation) {
-                if ($delegation->canTransit()) {
-                    $queue[] = $delegation->delegatorId;
+                if (!$delegation->canTransit()) {
+                    continue;
                 }
+
+                $queue[] = $delegation->delegatorId;
             }
         }
 

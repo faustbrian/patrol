@@ -24,13 +24,12 @@ use Patrol\Core\ValueObjects\Subject;
  * This orchestrator separates the concerns of rule matching (ACL vs ABAC) from effect
  * resolution, enabling flexible authorization models with consistent decision logic.
  *
- * @see RuleMatcherInterface For rule matching strategies
- * @see EffectResolver For conflict resolution between matching rules
- * @see Policy For the policy structure containing rules
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see RuleMatcherInterface For rule matching strategies
+ * @see EffectResolver For conflict resolution between matching rules
+ * @see Policy For the policy structure containing rules
  */
 final readonly class PolicyEvaluator
 {
@@ -81,9 +80,11 @@ final readonly class PolicyEvaluator
 
         // Filter policy rules to find those matching the authorization context
         foreach ($policy->rules as $rule) {
-            if ($this->ruleMatcher->matches($rule, $subject, $resource, $action)) {
-                $matchingRules[] = $rule;
+            if (!$this->ruleMatcher->matches($rule, $subject, $resource, $action)) {
+                continue;
             }
+
+            $matchingRules[] = $rule;
         }
 
         // Resolve conflicts between matching rules to determine final effect

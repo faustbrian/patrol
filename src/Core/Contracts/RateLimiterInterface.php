@@ -27,10 +27,9 @@ namespace Patrol\Core\Contracts;
  * - "patrol:auth:{subject_id}" for global per-user limits
  * - "patrol:auth:{ip_address}" for IP-based throttling
  *
+ * @author Brian Faust <brian@cline.sh>
  * @see CacheRateLimiter For cache-based implementation using Laravel's cache system
  * @see RateLimitExceededException Thrown when attempt() returns false
- *
- * @author Brian Faust <brian@cline.sh>
  */
 interface RateLimiterInterface
 {

@@ -46,9 +46,8 @@ use Patrol\Laravel\Patrol as PatrolService;
  * @method static void          resolveSubject(Closure(): (null|array<string, mixed>|object|Subject) $resolver)        Register a closure that resolves the current subject
  * @method static void          resolveTenant(Closure(): (null|array<string, mixed>|Domain|object) $resolver)          Register a closure that resolves the current tenant
  *
- * @see PatrolService
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see PatrolService
  */
 final class Patrol extends Facade
 {

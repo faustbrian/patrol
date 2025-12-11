@@ -19,9 +19,8 @@ use Patrol\Core\ValueObjects\Subject;
  * security tokens. This abstraction decouples the authorization system from specific
  * authentication mechanisms, enabling support for various authentication strategies.
  *
- * @see Subject For the subject value object structure
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see Subject For the subject value object structure
  */
 interface SubjectResolverInterface
 {

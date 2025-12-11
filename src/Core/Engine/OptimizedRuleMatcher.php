@@ -35,9 +35,8 @@ use function array_values;
  * - Short-circuit evaluation returns immediately on first Deny match
  * - Reduces matcher comparisons from O(n) to O(k) where k << n
  *
- * @see RuleMatcherInterface For the matcher interface being optimized
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see RuleMatcherInterface For the matcher interface being optimized
  */
 final class OptimizedRuleMatcher implements RuleMatcherInterface
 {

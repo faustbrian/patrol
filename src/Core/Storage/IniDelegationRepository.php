@@ -48,11 +48,10 @@ use function throw_unless;
  * Uses PHP's native INI parsing for delegation storage. Each delegation
  * is stored as a section with pipe-delimited arrays and JSON metadata.
  *
- * @see FileStorageBase For versioning and path management
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see FileStorageBase For versioning and path management
  */
 final readonly class IniDelegationRepository extends FileStorageBase implements DelegationRepositoryInterface
 {
@@ -349,10 +348,12 @@ final readonly class IniDelegationRepository extends FileStorageBase implements 
 
                 if (is_array($data)) {
                     foreach ($data as $section) {
-                        if (is_array($section)) {
-                            /** @var array<string, mixed> $section */
-                            $delegations[] = $section;
+                        if (!is_array($section)) {
+                            continue;
                         }
+
+                        /** @var array<string, mixed> $section */
+                        $delegations[] = $section;
                     }
                 }
             } catch (Exception) {

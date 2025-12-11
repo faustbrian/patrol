@@ -20,9 +20,8 @@ use Patrol\Core\ValueObjects\StorageDriver;
  * resolution, and configuration mapping. Supports both policy and delegation
  * repositories across all storage drivers.
  *
- * @see StorageManager For usage context
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see StorageManager For usage context
  */
 interface StorageFactoryInterface
 {

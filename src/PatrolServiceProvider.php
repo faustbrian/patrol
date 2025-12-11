@@ -216,9 +216,11 @@ final class PatrolServiceProvider extends PackageServiceProvider
         });
 
         // Register delegation components if enabled
-        if (config('patrol.delegation.enabled', false) === true) {
-            $this->registerDelegationServices();
+        if (config('patrol.delegation.enabled', false) !== true) {
+            return;
         }
+
+        $this->registerDelegationServices();
     }
 
     /**
@@ -251,9 +253,11 @@ final class PatrolServiceProvider extends PackageServiceProvider
 
         $resourceResolver = config('patrol.resource_resolver');
 
-        if ($resourceResolver instanceof Closure) {
-            Patrol::resolveResource($resourceResolver);
+        if (!$resourceResolver instanceof Closure) {
+            return;
         }
+
+        Patrol::resolveResource($resourceResolver);
     }
 
     /**

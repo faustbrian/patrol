@@ -50,10 +50,12 @@ describe('PolicyCompiler', function (): void {
     });
 
     afterEach(function (): void {
-        if (is_dir($this->tempDir)) {
-            array_map(unlink(...), glob($this->tempDir.'/*'));
-            rmdir($this->tempDir);
+        if (!is_dir($this->tempDir)) {
+            return;
         }
+
+        array_map(unlink(...), glob($this->tempDir.'/*'));
+        rmdir($this->tempDir);
     });
 
     describe('compile()', function (): void {

@@ -16,9 +16,8 @@ namespace Patrol\Core\Contracts;
  * Access Control) policies, allowing flexible access decisions based on entity properties,
  * relationships, or computed values that may not be directly accessible as properties.
  *
- * @see AttributeResolver For the core attribute resolution implementation
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see AttributeResolver For the core attribute resolution implementation
  */
 interface AttributeProviderInterface
 {

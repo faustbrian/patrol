@@ -34,11 +34,10 @@ use function json_encode;
  * - Single quotes for strings
  * - Multi-line strings
  *
- * @see AbstractFilePolicyRepository For common policy operations
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see AbstractFilePolicyRepository For common policy operations
  */
 final readonly class Json5PolicyRepository extends AbstractFilePolicyRepository
 {

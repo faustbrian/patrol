@@ -44,11 +44,10 @@ use function count;
  * }
  * ```
  *
- * @see PolicySimulator For generating simulation results
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see PolicySimulator For generating simulation results
  */
 final readonly class SimulationResult
 {

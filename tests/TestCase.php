@@ -13,9 +13,8 @@ use Orchestra\Testbench\TestCase as BaseTestCase;
 use Patrol\PatrolServiceProvider;
 
 /**
- * @internal
- *
  * @author Brian Faust <brian@cline.sh>
+ * @internal
  */
 abstract class TestCase extends BaseTestCase
 {

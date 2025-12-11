@@ -191,9 +191,11 @@ final readonly class DatabasePolicyRepository implements PolicyRepositoryInterfa
             }
         }
 
-        if ($records !== []) {
-            PolicyModel::on($this->connection)->insert($records);
+        if ($records === []) {
+            return;
         }
+
+        PolicyModel::on($this->connection)->insert($records);
     }
 
     /**

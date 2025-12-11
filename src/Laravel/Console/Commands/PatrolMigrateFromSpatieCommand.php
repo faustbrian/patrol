@@ -279,9 +279,8 @@ final class PatrolMigrateFromSpatieCommand extends Command
      * If you prefer denormalized user-specific rules instead of runtime evaluation,
      * you can uncomment the implementation below.
      *
-     * @codeCoverageIgnore
-     *
      * @return array<PolicyRule> Empty array (denormalization not recommended for RBAC)
+     * @codeCoverageIgnore
      *
      * @phpstan-ignore-next-line method.unused
      */
@@ -452,9 +451,11 @@ final class PatrolMigrateFromSpatieCommand extends Command
 
         $this->table($headers, $rows);
 
-        if (count($rules) > 10) {
-            $this->components->info(sprintf('... and %d more', count($rules) - 10));
-            $this->newLine();
+        if (count($rules) <= 10) {
+            return;
         }
+
+        $this->components->info(sprintf('... and %d more', count($rules) - 10));
+        $this->newLine();
     }
 }

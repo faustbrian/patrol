@@ -44,11 +44,10 @@ use function throw_unless;
  * Uses colinodell/json5 for parsing JSON5 files with human-friendly features
  * like comments and trailing commas. Writes standard JSON for compatibility.
  *
- * @see FileStorageBase For versioning and path management
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see FileStorageBase For versioning and path management
  */
 final readonly class Json5DelegationRepository extends FileStorageBase implements DelegationRepositoryInterface
 {
@@ -329,10 +328,12 @@ final readonly class Json5DelegationRepository extends FileStorageBase implement
             /** @codeCoverageIgnoreEnd */
             $data = Json5Decoder::decode($content, true);
 
-            if (is_array($data)) {
-                /** @var array<string, mixed> $data */
-                $delegations[] = $data;
+            if (!is_array($data)) {
+                continue;
             }
+
+            /** @var array<string, mixed> $data */
+            $delegations[] = $data;
         }
 
         return $delegations;
@@ -383,9 +384,11 @@ final readonly class Json5DelegationRepository extends FileStorageBase implement
 
         $encoded = json_encode($delegations, JSON_PRETTY_PRINT);
 
-        if ($encoded !== false) {
-            File::put($filePath, $encoded);
+        if ($encoded === false) {
+            return;
         }
+
+        File::put($filePath, $encoded);
     }
 
     /**
@@ -402,9 +405,11 @@ final readonly class Json5DelegationRepository extends FileStorageBase implement
 
         $encoded = json_encode($data, JSON_PRETTY_PRINT);
 
-        if ($encoded !== false) {
-            File::put($filePath, $encoded);
+        if ($encoded === false) {
+            return;
         }
+
+        File::put($filePath, $encoded);
     }
 
     private function buildDirectoryPath(string $type): string

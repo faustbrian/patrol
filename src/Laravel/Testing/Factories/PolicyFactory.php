@@ -54,9 +54,8 @@ use Patrol\Core\ValueObjects\Priority;
  * );
  * ```
  *
- * @see Policy For the policy structure containing rules
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see Policy For the policy structure containing rules
  */
 final class PolicyFactory
 {

@@ -44,11 +44,10 @@ use function throw_unless;
  * Persists delegations as JSON files with support for create, read, update,
  * and delete operations. Maintains version history and provides in-memory caching.
  *
- * @see FileStorageBase For versioning and path management
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see FileStorageBase For versioning and path management
  */
 final readonly class JsonDelegationRepository extends FileStorageBase implements DelegationRepositoryInterface
 {
@@ -394,10 +393,12 @@ final readonly class JsonDelegationRepository extends FileStorageBase implements
 
             $data = json_decode($content, true);
 
-            if (is_array($data)) {
-                /** @var array<string, mixed> $data */
-                $delegations[] = $data;
+            if (!is_array($data)) {
+                continue;
             }
+
+            /** @var array<string, mixed> $data */
+            $delegations[] = $data;
         }
 
         return $delegations;
@@ -460,9 +461,11 @@ final readonly class JsonDelegationRepository extends FileStorageBase implements
 
         $encoded = json_encode($delegations, JSON_PRETTY_PRINT);
 
-        if ($encoded !== false) {
-            File::put($filePath, $encoded);
+        if ($encoded === false) {
+            return;
         }
+
+        File::put($filePath, $encoded);
     }
 
     /**
@@ -485,9 +488,11 @@ final readonly class JsonDelegationRepository extends FileStorageBase implements
 
         $encoded = json_encode($data, JSON_PRETTY_PRINT);
 
-        if ($encoded !== false) {
-            File::put($filePath, $encoded);
+        if ($encoded === false) {
+            return;
         }
+
+        File::put($filePath, $encoded);
     }
 
     /**

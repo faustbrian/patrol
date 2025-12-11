@@ -29,10 +29,9 @@ use function str_starts_with;
  * - Wildcard and null resources excluded from inheritance
  * - Enables hierarchical permission management for complex resource trees
  *
+ * @author Brian Faust <brian@cline.sh>
  * @see Policy For the policy structure containing rules
  * @see PolicyRule For individual authorization rules
- *
- * @author Brian Faust <brian@cline.sh>
  */
 final class PolicyInheritance
 {
@@ -65,9 +64,11 @@ final class PolicyInheritance
             $expandedRules[] = $rule;
 
             // Create inherited rule if this rule's resource is a parent path
-            if ($this->hasParentPath($rule->resource, $resource->id)) {
-                $expandedRules[] = $this->inheritRule($rule, $resource->id);
+            if (!$this->hasParentPath($rule->resource, $resource->id)) {
+                continue;
             }
+
+            $expandedRules[] = $this->inheritRule($rule, $resource->id);
         }
 
         return new Policy($expandedRules);

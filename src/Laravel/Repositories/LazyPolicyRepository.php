@@ -273,9 +273,11 @@ final readonly class LazyPolicyRepository implements PolicyRepositoryInterface
             }
         }
 
-        if ($records !== []) {
-            DB::connection($this->connection)->table($this->table)->insert($records);
+        if ($records === []) {
+            return;
         }
+
+        DB::connection($this->connection)->table($this->table)->insert($records);
     }
 
     /**

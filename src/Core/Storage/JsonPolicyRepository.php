@@ -41,11 +41,10 @@ use function throw_unless;
  * semantic versioning, and in-memory caching. Uses Symfony-style dump/parse pattern
  * for serialization. Throws exceptions for missing or invalid files in single-file mode.
  *
- * @see FileStorageBase For versioning and path management
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see FileStorageBase For versioning and path management
  */
 final readonly class JsonPolicyRepository extends AbstractFilePolicyRepository
 {

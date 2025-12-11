@@ -62,11 +62,10 @@ use function throw_unless;
  * ]
  * ```
  *
- * @see PolicyRepositoryInterface For the repository contract
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see PolicyRepositoryInterface For the repository contract
  */
 final readonly class FilePolicyRepository implements PolicyRepositoryInterface
 {
@@ -133,19 +132,21 @@ final readonly class FilePolicyRepository implements PolicyRepositoryInterface
         $rules = [];
 
         foreach ($this->policies as $policyData) {
-            if ($this->matches($subject, $resource, $policyData)) {
-                $effectName = $policyData['effect'];
-                $effect = $effectName === 'Allow' ? Effect::Allow : Effect::Deny;
-
-                $rules[] = new PolicyRule(
-                    subject: $policyData['subject'],
-                    resource: $policyData['resource'] ?? null,
-                    action: $policyData['action'],
-                    effect: $effect,
-                    priority: new Priority($policyData['priority'] ?? 1),
-                    domain: array_key_exists('domain', $policyData) ? new Domain($policyData['domain']) : null,
-                );
+            if (!$this->matches($subject, $resource, $policyData)) {
+                continue;
             }
+
+            $effectName = $policyData['effect'];
+            $effect = $effectName === 'Allow' ? Effect::Allow : Effect::Deny;
+
+            $rules[] = new PolicyRule(
+                subject: $policyData['subject'],
+                resource: $policyData['resource'] ?? null,
+                action: $policyData['action'],
+                effect: $effect,
+                priority: new Priority($policyData['priority'] ?? 1),
+                domain: array_key_exists('domain', $policyData) ? new Domain($policyData['domain']) : null,
+            );
         }
 
         return new Policy($rules);

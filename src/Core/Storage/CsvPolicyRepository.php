@@ -25,11 +25,10 @@ use function array_key_exists;
  *
  * CSV structure: subject,resource,action,effect,priority,domain
  *
- * @see AbstractFilePolicyRepository For common policy operations
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see AbstractFilePolicyRepository For common policy operations
  */
 final readonly class CsvPolicyRepository extends AbstractFilePolicyRepository
 {

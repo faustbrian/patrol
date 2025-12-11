@@ -34,9 +34,8 @@ use function sprintf;
  * - Ensure the path is absolute or correctly resolved from working directory
  * - Confirm the file was deployed with the application
  *
- * @see FilePolicyRepository For the repository requiring valid policy file paths
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see FilePolicyRepository For the repository requiring valid policy file paths
  */
 final class PolicyFileNotFoundException extends InvalidArgumentException
 {

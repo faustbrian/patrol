@@ -421,9 +421,11 @@ describe('Role', function (): void {
                 expect($role->name)->toBeString();
 
                 // Domain must be either null or instance of Domain
-                if ($role->domain instanceof Domain) {
-                    expect($role->domain)->toBeInstanceOf(Domain::class);
+                if (!$role->domain instanceof Domain) {
+                    continue;
                 }
+
+                expect($role->domain)->toBeInstanceOf(Domain::class);
             }
         });
     });

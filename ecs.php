@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-use Cline\CodingStandard\Rector\Factory;
+use Cline\CodingStandard\EasyCodingStandard\Factory;
 
 return Factory::create(
     paths: [__DIR__.'/src', __DIR__.'/tests'],

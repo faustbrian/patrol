@@ -51,10 +51,9 @@ use function max;
  * }
  * ```
  *
+ * @author Brian Faust <brian@cline.sh>
  * @see RateLimiterInterface For the rate limiter contract
  * @see CacheRepository For Laravel's cache interface
- *
- * @author Brian Faust <brian@cline.sh>
  *
  * @psalm-immutable
  */

@@ -23,11 +23,10 @@ use function array_key_exists;
  * validation and transformation pipelines. Policies are stored under
  * <policies><policy>...</policy></policies> structure.
  *
- * @see AbstractFilePolicyRepository For common policy operations
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see AbstractFilePolicyRepository For common policy operations
  */
 final readonly class XmlPolicyRepository extends AbstractFilePolicyRepository
 {

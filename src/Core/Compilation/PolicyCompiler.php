@@ -27,9 +27,8 @@ use function sprintf;
  * faster authorization decisions compared to interpretive policy evaluation for
  * frequently accessed policies in production environments.
  *
- * @see Policy For the policy structure being compiled
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see Policy For the policy structure being compiled
  */
 final class PolicyCompiler
 {

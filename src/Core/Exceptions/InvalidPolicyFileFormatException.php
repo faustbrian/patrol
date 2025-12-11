@@ -31,9 +31,8 @@ use function sprintf;
  * - Missing required fields in policy definitions
  * - Incorrect data types (string where object expected, etc.)
  *
- * @see FilePolicyRepository For the repository that validates policy file structure
- *
  * @author Brian Faust <brian@cline.sh>
+ * @see FilePolicyRepository For the repository that validates policy file structure
  */
 final class InvalidPolicyFileFormatException extends InvalidArgumentException
 {

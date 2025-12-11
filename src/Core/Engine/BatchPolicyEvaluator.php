@@ -43,10 +43,9 @@ use Patrol\Core\ValueObjects\Subject;
  * $authorized = array_filter($resources, fn($r) => $effects[$r->id] === Effect::Allow);
  * ```
  *
+ * @author Brian Faust <brian@cline.sh>
  * @see PolicyRepositoryInterface::getPoliciesForBatch() For optimized batch policy loading
  * @see PolicyEvaluator For individual policy evaluation logic
- *
- * @author Brian Faust <brian@cline.sh>
  *
  * @psalm-immutable
  */

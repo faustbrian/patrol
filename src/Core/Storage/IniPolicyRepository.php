@@ -35,11 +35,10 @@ use function sprintf;
  * priority = 1
  * domain = engineering
  *
- * @see AbstractFilePolicyRepository For common policy operations
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see AbstractFilePolicyRepository For common policy operations
  */
 final readonly class IniPolicyRepository extends AbstractFilePolicyRepository
 {

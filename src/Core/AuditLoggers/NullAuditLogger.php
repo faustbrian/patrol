@@ -25,11 +25,10 @@ use Patrol\Core\ValueObjects\Subject;
  * incurs minimal performance cost, making it ideal for development environments
  * or systems where access logging is handled by external infrastructure.
  *
- * @see AuditLoggerInterface For the audit logger contract
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see AuditLoggerInterface For the audit logger contract
  */
 final readonly class NullAuditLogger implements AuditLoggerInterface
 {

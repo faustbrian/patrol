@@ -27,10 +27,9 @@ use function str_replace;
  * support for wildcards and superuser privileges, making it suitable for straightforward
  * permission systems that don't require attribute-based conditions.
  *
+ * @author Brian Faust <brian@cline.sh>
  * @see RuleMatcherInterface For the rule matcher contract
  * @see AbacRuleMatcher For attribute-based matching with dynamic conditions
- *
- * @author Brian Faust <brian@cline.sh>
  */
 final class AclRuleMatcher implements RuleMatcherInterface
 {

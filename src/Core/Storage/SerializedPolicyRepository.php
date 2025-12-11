@@ -25,11 +25,10 @@ use function unserialize;
  * file-based option but not human-readable or portable to other languages.
  * Disallows object unserialization for security (allowed_classes => false).
  *
- * @see AbstractFilePolicyRepository For common policy operations
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see AbstractFilePolicyRepository For common policy operations
  */
 final readonly class SerializedPolicyRepository extends AbstractFilePolicyRepository
 {

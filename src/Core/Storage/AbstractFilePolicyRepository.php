@@ -58,21 +58,23 @@ abstract readonly class AbstractFilePolicyRepository extends FileStorageBase imp
         $rules = [];
 
         foreach ($policies as $policyData) {
-            if ($this->matches($subject, $resource, $policyData)) {
-                $effectName = $policyData['effect'];
-                $effect = $effectName === 'Allow' ? Effect::Allow : Effect::Deny;
-
-                $priority = (int) ($policyData['priority'] ?? 1);
-
-                $rules[] = new PolicyRule(
-                    subject: $policyData['subject'],
-                    resource: $policyData['resource'] ?? null,
-                    action: $policyData['action'],
-                    effect: $effect,
-                    priority: new Priority($priority),
-                    domain: array_key_exists('domain', $policyData) ? new Domain($policyData['domain']) : null,
-                );
+            if (!$this->matches($subject, $resource, $policyData)) {
+                continue;
             }
+
+            $effectName = $policyData['effect'];
+            $effect = $effectName === 'Allow' ? Effect::Allow : Effect::Deny;
+
+            $priority = (int) ($policyData['priority'] ?? 1);
+
+            $rules[] = new PolicyRule(
+                subject: $policyData['subject'],
+                resource: $policyData['resource'] ?? null,
+                action: $policyData['action'],
+                effect: $effect,
+                priority: new Priority($priority),
+                domain: array_key_exists('domain', $policyData) ? new Domain($policyData['domain']) : null,
+            );
         }
 
         return new Policy($rules);
@@ -335,19 +337,21 @@ abstract readonly class AbstractFilePolicyRepository extends FileStorageBase imp
 
             // decode() returns array<int, array{subject: string, ...}>
             // But individual policy files may contain a single object with string keys
-            if ($data !== null && $data !== []) {
-                $firstKey = array_key_first($data);
+            if ($data === null || $data === []) {
+                continue;
+            }
 
-                // If first key is string 'subject', it's a single policy object - wrap it
-                // @phpstan-ignore identical.alwaysFalse (firstKey can be int or string depending on file format)
-                if ($firstKey === 'subject') {
-                    /** @var array{subject: string, resource?: string, action: string, effect: string, priority?: int, domain?: string} $data */
-                    $policies[] = $data;
-                } else {
-                    // It's an array of policies
-                    foreach ($data as $policy) {
-                        $policies[] = $policy;
-                    }
+            $firstKey = array_key_first($data);
+
+            // If first key is string 'subject', it's a single policy object - wrap it
+            // @phpstan-ignore identical.alwaysFalse (firstKey can be int or string depending on file format)
+            if ($firstKey === 'subject') {
+                /** @var array{subject: string, resource?: string, action: string, effect: string, priority?: int, domain?: string} $data */
+                $policies[] = $data;
+            } else {
+                // It's an array of policies
+                foreach ($data as $policy) {
+                    $policies[] = $policy;
                 }
             }
         }

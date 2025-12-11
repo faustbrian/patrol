@@ -115,26 +115,30 @@ final readonly class ConflictDetector
                     $hasAllow = true;
                 }
 
-                if ($rule->effect === Effect::Deny) {
-                    $hasDeny = true;
+                if ($rule->effect !== Effect::Deny) {
+                    continue;
                 }
+
+                $hasDeny = true;
             }
 
-            if ($hasAllow && $hasDeny) {
-                $firstRule = $rules[0];
-                $conflicts[] = [
-                    'subject' => $firstRule->subject,
-                    'resource' => $firstRule->resource,
-                    'action' => $firstRule->action,
-                    'rules' => array_map(
-                        fn ($r): array => [
-                            'effect' => $r->effect,
-                            'priority' => $r->priority->value,
-                        ],
-                        $rules,
-                    ),
-                ];
+            if (!$hasAllow || !$hasDeny) {
+                continue;
             }
+
+            $firstRule = $rules[0];
+            $conflicts[] = [
+                'subject' => $firstRule->subject,
+                'resource' => $firstRule->resource,
+                'action' => $firstRule->action,
+                'rules' => array_map(
+                    fn ($r): array => [
+                        'effect' => $r->effect,
+                        'priority' => $r->priority->value,
+                    ],
+                    $rules,
+                ),
+            ];
         }
 
         return $conflicts;
@@ -171,21 +175,23 @@ final readonly class ConflictDetector
         }
 
         foreach ($rulesByPriority as $priority => $rules) {
-            if (count($rules) > 1) {
-                $collisions[] = [
-                    'priority' => $priority,
-                    'count' => count($rules),
-                    'rules' => array_map(
-                        fn ($r): array => [
-                            'subject' => $r->subject,
-                            'resource' => $r->resource,
-                            'action' => $r->action,
-                            'effect' => $r->effect,
-                        ],
-                        $rules,
-                    ),
-                ];
+            if (count($rules) <= 1) {
+                continue;
             }
+
+            $collisions[] = [
+                'priority' => $priority,
+                'count' => count($rules),
+                'rules' => array_map(
+                    fn ($r): array => [
+                        'subject' => $r->subject,
+                        'resource' => $r->resource,
+                        'action' => $r->action,
+                        'effect' => $r->effect,
+                    ],
+                    $rules,
+                ),
+            ];
         }
 
         return $collisions;

@@ -15,9 +15,8 @@ use Patrol\PatrolServiceProvider;
 /**
  * Base test case for core tests with Laravel environment.
  *
- * @internal
- *
  * @author Brian Faust <brian@cline.sh>
+ * @internal
  */
 abstract class CoreTestCase extends BaseTestCase
 {

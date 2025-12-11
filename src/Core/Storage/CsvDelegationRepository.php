@@ -48,11 +48,10 @@ use function throw_unless;
  *
  * CSV structure: id,delegator_id,delegate_id,resources,actions,domain,created_at,expires_at,is_transitive,state,metadata,revoked_at
  *
- * @see FileStorageBase For versioning and path management
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see FileStorageBase For versioning and path management
  */
 final readonly class CsvDelegationRepository extends FileStorageBase implements DelegationRepositoryInterface
 {

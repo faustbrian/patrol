@@ -117,8 +117,10 @@ final class DatabaseConfiguration
      */
     public static function addSoftDeletes(Blueprint $table): void
     {
-        if (self::softDeletesEnabled()) {
-            $table->softDeletes();
+        if (!self::softDeletesEnabled()) {
+            return;
         }
+
+        $table->softDeletes();
     }
 }

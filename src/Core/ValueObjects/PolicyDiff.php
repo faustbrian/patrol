@@ -44,11 +44,10 @@ use function count;
  * }
  * ```
  *
- * @see PolicyComparator For generating diffs from policy pairs
- *
  * @psalm-immutable
  *
  * @author Brian Faust <brian@cline.sh>
+ * @see PolicyComparator For generating diffs from policy pairs
  */
 final readonly class PolicyDiff
 {

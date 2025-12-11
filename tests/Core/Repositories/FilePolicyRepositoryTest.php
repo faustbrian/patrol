@@ -736,15 +736,19 @@ describe('FilePolicyRepository', function (): void {
                 foreach ($parts as $part) {
                     $currentPath .= $part.'/';
 
-                    if (is_dir($currentPath) && str_contains($currentPath, 'patrol_test_')) {
-                        $paths[] = mb_rtrim($currentPath, '/');
+                    if (!is_dir($currentPath) || !str_contains($currentPath, 'patrol_test_')) {
+                        continue;
                     }
+
+                    $paths[] = mb_rtrim($currentPath, '/');
                 }
 
                 foreach (array_reverse($paths) as $dir) {
-                    if (is_dir($dir)) {
-                        rmdir($dir);
+                    if (!is_dir($dir)) {
+                        continue;
                     }
+
+                    rmdir($dir);
                 }
 
                 // Act - save should recreate deep directory structure
@@ -758,9 +762,11 @@ describe('FilePolicyRepository', function (): void {
                 unlink($tempFile);
 
                 foreach (array_reverse($paths) as $dir) {
-                    if (is_dir($dir)) {
-                        rmdir($dir);
+                    if (!is_dir($dir)) {
+                        continue;
                     }
+
+                    rmdir($dir);
                 }
             });
         });
@@ -779,9 +785,11 @@ describe('FilePolicyRepository', function (): void {
             expect(true)->toBeTrue();
 
             // Cleanup
-            if (file_exists($tempFile)) {
-                unlink($tempFile);
+            if (!file_exists($tempFile)) {
+                return;
             }
+
+            unlink($tempFile);
         });
 
         test('restore is a no-op for file repositories', function (): void {
@@ -798,9 +806,11 @@ describe('FilePolicyRepository', function (): void {
             expect(true)->toBeTrue();
 
             // Cleanup
-            if (file_exists($tempFile)) {
-                unlink($tempFile);
+            if (!file_exists($tempFile)) {
+                return;
             }
+
+            unlink($tempFile);
         });
 
         test('forceDelete is a no-op for file repositories', function (): void {
@@ -817,9 +827,11 @@ describe('FilePolicyRepository', function (): void {
             expect(true)->toBeTrue();
 
             // Cleanup
-            if (file_exists($tempFile)) {
-                unlink($tempFile);
+            if (!file_exists($tempFile)) {
+                return;
             }
+
+            unlink($tempFile);
         });
 
         test('getTrashed returns empty policy for file repositories', function (): void {
@@ -836,9 +848,11 @@ describe('FilePolicyRepository', function (): void {
             expect($trashed->rules)->toBeEmpty();
 
             // Cleanup
-            if (file_exists($tempFile)) {
-                unlink($tempFile);
+            if (!file_exists($tempFile)) {
+                return;
             }
+
+            unlink($tempFile);
         });
 
         test('getWithTrashed behaves same as getPoliciesFor for file repositories', function (): void {
@@ -867,9 +881,11 @@ describe('FilePolicyRepository', function (): void {
             expect($normal->rules[0]->subject)->toBe($withTrashed->rules[0]->subject);
 
             // Cleanup
-            if (file_exists($tempFile)) {
-                unlink($tempFile);
+            if (!file_exists($tempFile)) {
+                return;
             }
+
+            unlink($tempFile);
         });
     });
 
